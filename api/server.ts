@@ -1,26 +1,89 @@
 // Vercel serverless function that fronts the TanStack Start SSR bundle.
-//
-// The Vite build emits `dist/server/server.js` whose default export is a
-// `{ fetch(request: Request): Promise<Response> }` handler. Vercel detects
-// the Web Standards (Request -> Response) signature and runs this on the
-// Node.js runtime (Fluid Compute when enabled).
-//
-// `vercel.json` rewrites every non-static path to `/api/server`, so the
-// router still sees the original URL via `request.url`.
-//
-// We import the built server bundle with a `.js` extension and use a
-// `// @ts-ignore` because the bundle has no shipped types — its runtime
-// shape is `{ fetch }`.
-
-// @ts-ignore - generated at build time by `vite build` (no type declarations)
-import server from "../dist/server/server.js";
+// `vercel.json` rewrites every non-static path here, while preserving req.url.
 
 type FetchHandler = {
   fetch: (request: Request) => Promise<Response> | Response;
 };
 
-const handler = server as FetchHandler;
+type VercelRequest = {
+  method?: string;
+  url?: string;
+  headers: Record<string, string | string[] | undefined>;
+  socket?: { encrypted?: boolean };
+  body?: unknown;
+  [Symbol.asyncIterator]?: unknown;
+};
 
-export default async function vercelHandler(request: Request): Promise<Response> {
-  return await handler.fetch(request);
+type VercelResponse = {
+  status: (code: number) => VercelResponse;
+  setHeader: (name: string, value: string | string[]) => void;
+  end: (body?: Buffer) => void;
+};
+
+let serverPromise: Promise<FetchHandler> | undefined;
+
+function loadServer() {
+  serverPromise ??= import("../dist/server/server.js").then((mod) => mod.default as FetchHandler);
+  return serverPromise;
+}
+
+function getRequestOrigin(req: VercelRequest) {
+  const proto =
+    typeof req.headers["x-forwarded-proto"] === "string"
+      ? req.headers["x-forwarded-proto"]
+      : req.socket?.encrypted
+        ? "https"
+        : "http";
+  const host =
+    typeof req.headers["x-forwarded-host"] === "string"
+      ? req.headers["x-forwarded-host"]
+      : typeof req.headers.host === "string"
+        ? req.headers.host
+        : "localhost";
+
+  return `${proto}://${host}`;
+}
+
+function toFetchHeaders(req: VercelRequest) {
+  const headers = new Headers();
+
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (typeof value === "string") {
+      headers.set(key, value);
+    } else if (Array.isArray(value)) {
+      for (const item of value) {
+        headers.append(key, item);
+      }
+    }
+  }
+
+  return headers;
+}
+
+function toFetchRequest(req: VercelRequest) {
+  const method = req.method ?? "GET";
+  const bodyless = method === "GET" || method === "HEAD";
+  const body = bodyless ? undefined : req.body ?? (req as unknown as ReadableStream);
+
+  return new Request(new URL(req.url ?? "/", getRequestOrigin(req)), {
+    method,
+    headers: toFetchHeaders(req),
+    body: body as BodyInit | undefined,
+    ...(bodyless ? {} : { duplex: "half" as const }),
+  });
+}
+
+async function sendFetchResponse(response: Response, res: VercelResponse) {
+  response.headers.forEach((value, key) => {
+    res.setHeader(key, value);
+  });
+
+  const body = Buffer.from(await response.arrayBuffer());
+  res.status(response.status).end(body);
+}
+
+export default async function vercelHandler(req: VercelRequest, res: VercelResponse) {
+  const server = await loadServer();
+  const response = await server.fetch(toFetchRequest(req));
+  await sendFetchResponse(response, res);
 }

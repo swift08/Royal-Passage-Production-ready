@@ -52,18 +52,6 @@
   --radius: 6px;
   /* Header is shorter on mobile so the fixed bar doesn't eat the viewport. */
   --header-height: 4rem;
-}
-
-@media (min-width: 640px) {
-  :root {
-    --header-height: 4.75rem;
-  }
-}
-
-@media (min-width: 768px) {
-  :root {
-    --header-height: 5.75rem;
-  }
 
   --burgundy: oklch(0.21 0.1 22);
   --burgundy-deep: oklch(0.15 0.08 20);
@@ -113,6 +101,18 @@
   --chart-3: oklch(0.55 0.06 220);
   --chart-4: oklch(0.7 0.1 80);
   --chart-5: oklch(0.45 0.04 300);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-height: 4.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 5.75rem;
+  }
 }
 
 @layer base {
