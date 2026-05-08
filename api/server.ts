@@ -23,7 +23,13 @@ type VercelResponse = {
 let serverPromise: Promise<FetchHandler> | undefined;
 
 function loadServer() {
-  serverPromise ??= import("../dist/server/server.js").then((mod) => mod.default as FetchHandler);
+  if (!serverPromise) {
+    serverPromise = (async () => {
+      // @ts-ignore - emitted by `vite build` at deploy time; no shipped types.
+      const mod = await import("../dist/server/server.js");
+      return mod.default as FetchHandler;
+    })();
+  }
   return serverPromise;
 }
 
