@@ -119,7 +119,7 @@ function ExperienceDetail() {
         </Link>
       </section>
 
-      <section className="container-page grid md:grid-cols-12 gap-10">
+      <section className="container-page grid md:grid-cols-12 gap-8 md:gap-10">
         <div className="md:col-span-7">
           <div className="aspect-[4/5] overflow-hidden rounded-md bg-muted ring-1 ring-[oklch(0.78_0.1_78_/_0.35)] ring-offset-2 ring-offset-background">
             <img
@@ -128,6 +128,8 @@ function ExperienceDetail() {
               className="h-full w-full object-cover"
               width={1200}
               height={1500}
+              decoding="async"
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -145,8 +147,10 @@ function ExperienceDetail() {
           <div className="text-sm text-muted-foreground">
             {exp.city} · {exp.address}
           </div>
-          <h1 className="font-display text-4xl md:text-5xl leading-tight mt-2">{exp.title}</h1>
-          <p className="mt-4 text-lg italic text-muted-foreground">{exp.tagline}</p>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl leading-tight mt-2">
+            {exp.title}
+          </h1>
+          <p className="mt-4 text-base sm:text-lg italic text-muted-foreground">{exp.tagline}</p>
 
           <div className="hairline my-6" />
 
@@ -184,7 +188,7 @@ function ExperienceDetail() {
       </section>
 
       {/* INCLUSIONS + POLICY */}
-      <section className="container-page py-16 grid md:grid-cols-2 gap-10">
+      <section className="container-page py-12 sm:py-16 grid md:grid-cols-2 gap-8 md:gap-10">
         <div>
           <div className="eyebrow mb-4">What's included</div>
           <ul className="space-y-2">
@@ -204,10 +208,10 @@ function ExperienceDetail() {
 
       {/* BOOKING */}
       <section id="book" className="glass-strong border-y border-[oklch(0.88_0.08_86_/_0.1)]">
-        <div className="container-page py-20 grid md:grid-cols-12 gap-10">
+        <div className="container-page py-14 sm:py-20 grid md:grid-cols-12 gap-8 md:gap-10">
           <div className="md:col-span-5">
             <div className="eyebrow mb-3">Reserve your seats</div>
-            <h2 className="font-display text-4xl md:text-5xl leading-tight">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl leading-tight">
               Choose a date.
               <br />
               <em className="italic text-ember">Hold your moment.</em>
@@ -237,7 +241,9 @@ function ExperienceDetail() {
                     return (
                       <button
                         key={s.id}
+                        type="button"
                         disabled={sold}
+                        aria-pressed={active}
                         onClick={() => setSelectedSlot(s)}
                         className={`flex w-full items-center justify-between border p-4 text-left transition-all ${
                           active
@@ -276,17 +282,27 @@ function ExperienceDetail() {
                   <div className="eyebrow">Guests</div>
                   <div className="flex items-center gap-3">
                     <button
+                      type="button"
+                      aria-label="Decrease guest count"
                       onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                      className="h-9 w-9 border border-[oklch(0.88_0.08_86_/_0.2)] transition-colors hover:border-ember/50"
+                      className="h-9 w-9 border border-[oklch(0.88_0.08_86_/_0.2)] transition-colors hover:border-ember/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember/60"
                     >
                       −
                     </button>
-                    <span className="font-display text-xl w-6 text-center">{guests}</span>
+                    <span
+                      className="font-display text-xl w-6 text-center"
+                      aria-live="polite"
+                      aria-label={`${guests} guest${guests > 1 ? "s" : ""}`}
+                    >
+                      {guests}
+                    </span>
                     <button
+                      type="button"
+                      aria-label="Increase guest count"
                       onClick={() =>
                         setGuests((g) => Math.min(selectedSlot?.available ?? 1, g + 1))
                       }
-                      className="h-9 w-9 border border-[oklch(0.88_0.08_86_/_0.2)] transition-colors hover:border-ember/50"
+                      className="h-9 w-9 border border-[oklch(0.88_0.08_86_/_0.2)] transition-colors hover:border-ember/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember/60"
                     >
                       +
                     </button>
@@ -316,9 +332,10 @@ function ExperienceDetail() {
                 )}
 
                 <button
+                  type="button"
                   onClick={handleBook}
                   disabled={!selectedSlot || stage === "locking"}
-                  className="w-full rounded-sm bg-ember py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-gold)] transition-all hover:brightness-110 disabled:opacity-50"
+                  className="w-full rounded-sm bg-ember py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-gold)] transition-all hover:brightness-110 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember/60"
                 >
                   {stage === "locking"
                     ? "Holding your seats…"

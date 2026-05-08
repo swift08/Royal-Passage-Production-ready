@@ -8,12 +8,26 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // Lovable's TanStack preset defaults to port 8080 + host "::". Many tutorials assume Vite's 5173,
 // and some environments resolve `localhost` more reliably with host `true`.
+//
+// Disable the Cloudflare plugin so the server build produces a Node-compatible SSR bundle
+// (`dist/server/index.js`) that we can host on Vercel via a serverless function in `/api`.
 export default defineConfig({
+  cloudflare: false,
   vite: {
     server: {
       port: 5173,
       strictPort: false,
       host: true,
+    },
+    build: {
+      // Ensure the SSR bundle targets a recent Node runtime supported by Vercel.
+      target: "node20",
+    },
+    ssr: {
+      // Bundle these so the Vercel function can be self-contained without bringing huge
+      // optional Node deps along for the ride. Safe defaults that match TanStack Start's
+      // own recommendations.
+      noExternal: ["@tanstack/react-start", "@tanstack/react-router"],
     },
   },
 });

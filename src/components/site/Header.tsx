@@ -69,7 +69,9 @@ export function Header() {
             alt="The Royal Passage"
             width={320}
             height={110}
-            className="h-12 w-auto object-contain object-left drop-shadow-[0_0_28px_oklch(0.75_0.12_86_/_0.45)] sm:h-[4.25rem] md:h-20 lg:h-[5.25rem]"
+            decoding="async"
+            fetchPriority="high"
+            className="h-9 w-auto object-contain object-left drop-shadow-[0_0_28px_oklch(0.75_0.12_86_/_0.45)] sm:h-12 md:h-16 lg:h-20"
           />
         </Link>
         <nav className="hidden items-center gap-5 text-sm md:flex md:gap-7">

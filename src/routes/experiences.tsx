@@ -62,15 +62,15 @@ function ExperiencesPage() {
   return (
     <div className="pt-[var(--header-height)] text-foreground">
       <Header />
-      <section className="container-page pt-12 pb-8">
+      <section className="container-page pt-10 pb-6 sm:pt-12 sm:pb-8">
         <div className="eyebrow mb-3">The library</div>
-        <h1 className="font-display text-5xl md:text-6xl">All experiences</h1>
-        <p className="mt-4 max-w-xl text-muted-foreground">
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl">All experiences</h1>
+        <p className="mt-4 max-w-xl text-sm sm:text-base text-muted-foreground">
           {filtered.length} of {experiences.length} experiences match your filters.
         </p>
       </section>
 
-      <section className="container-page grid lg:grid-cols-[260px_1fr] gap-10 pb-20">
+      <section className="container-page grid lg:grid-cols-[260px_1fr] gap-8 lg:gap-10 pb-16 md:pb-20">
         {/* FILTERS */}
         <aside className="glass self-start space-y-8 rounded-md border border-[oklch(0.72_0.09_78_/_0.22)] p-6 lg:sticky lg:top-[calc(var(--header-height)+1rem)]">
           <FilterGroup label="Category">
@@ -148,7 +148,7 @@ function ExperiencesPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-5 sm:gap-x-6 gap-y-10 sm:gap-y-12">
               {filtered.map((e) => (
                 <ExperienceCard key={e.id} exp={e} />
               ))}

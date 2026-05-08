@@ -11,6 +11,8 @@ export function Footer() {
               alt=""
               width={140}
               height={42}
+              loading="lazy"
+              decoding="async"
               className="h-10 w-auto object-contain drop-shadow-[0_0_18px_oklch(0.72_0.12_86_/_0.35)]"
             />
             <span className="font-display text-xl tracking-tight text-foreground">The Royal Passage</span>
