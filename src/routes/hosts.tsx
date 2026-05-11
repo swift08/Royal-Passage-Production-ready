@@ -30,9 +30,8 @@ function HostsPage() {
             <em className="italic text-ember">host with intention.</em>
           </h1>
           <p className="mt-6 sm:mt-8 max-w-lg text-base sm:text-lg leading-relaxed text-muted-foreground">
-            We work with a small number of chefs, captains, artisans and guides who
-            care about the room as much as the craft. If that sounds like you, we'd
-            love to meet.
+            We work with a small number of chefs, captains, artisans and guides who care about the
+            room as much as the craft. If that sounds like you, we'd love to meet.
           </p>
         </div>
         <div className="md:col-span-5 md:pt-6 space-y-6 text-sm">
@@ -55,8 +54,8 @@ function HostsPage() {
         <div className="container-page py-14 sm:py-20 text-center">
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl">Ready to apply?</h2>
           <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-            Host applications open in the next phase. In the meantime, browse the
-            library to see the standard.
+            Host applications open in the next phase. In the meantime, browse the library to see the
+            standard.
           </p>
           <Link
             to="/experiences"

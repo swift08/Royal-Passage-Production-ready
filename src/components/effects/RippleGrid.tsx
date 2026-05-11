@@ -23,11 +23,7 @@ export type RippleGridProps = {
 function hexToRgb(hex: string): [number, number, number] {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
-    ? [
-        parseInt(result[1], 16) / 255,
-        parseInt(result[2], 16) / 255,
-        parseInt(result[3], 16) / 255,
-      ]
+    ? [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255]
     : [1, 1, 1];
 }
 
@@ -246,9 +242,10 @@ void main() {
       mousePositionRef.current.y +=
         (targetMouseRef.current.y - mousePositionRef.current.y) * lerpFactor;
 
-      const currentInfluence = uniforms.mouseInfluence.value as number;
+      const mouseInfluenceUniform = uniforms.mouseInfluence as { value: number };
+      const currentInfluence = mouseInfluenceUniform.value;
       const targetInfluence = mouseInfluenceRef.current;
-      uniforms.mouseInfluence.value += (targetInfluence - currentInfluence) * 0.05;
+      mouseInfluenceUniform.value += (targetInfluence - currentInfluence) * 0.05;
 
       uniforms.mousePosition.value = [mousePositionRef.current.x, mousePositionRef.current.y];
 
@@ -306,11 +303,5 @@ void main() {
     mouseInteractionRadius,
   ]);
 
-  return (
-    <div
-      ref={containerRef}
-      className={cn("ripple-grid-container", className)}
-      aria-hidden
-    />
-  );
+  return <div ref={containerRef} className={cn("ripple-grid-container", className)} aria-hidden />;
 }

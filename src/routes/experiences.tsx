@@ -39,9 +39,7 @@ function ExperiencesPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const priceCeiling = useMemo(() => {
-    const hi = experiences.length
-      ? Math.max(...experiences.map((e) => e.pricePerPerson))
-      : 400;
+    const hi = experiences.length ? Math.max(...experiences.map((e) => e.pricePerPerson)) : 400;
     return Math.max(400, Math.ceil(hi / 50) * 50);
   }, [experiences]);
   const [maxPrice, setMaxPrice] = useState<number>(search.maxPrice ?? priceCeiling);
@@ -54,7 +52,7 @@ function ExperiencesPage() {
       if (search.minRating && e.rating < search.minRating) return false;
       return true;
     });
-  }, [search, maxPrice]);
+  }, [experiences, search, maxPrice]);
 
   const update = (patch: Partial<Search>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }) });
@@ -74,10 +72,7 @@ function ExperiencesPage() {
         {/* FILTERS */}
         <aside className="glass self-start space-y-8 rounded-md border border-[oklch(0.72_0.09_78_/_0.22)] p-6 lg:sticky lg:top-[calc(var(--header-height)+1rem)]">
           <FilterGroup label="Category">
-            <FilterChip
-              active={!search.category}
-              onClick={() => update({ category: undefined })}
-            >
+            <FilterChip active={!search.category} onClick={() => update({ category: undefined })}>
               All
             </FilterChip>
             {categories.map((c) => (
@@ -125,9 +120,7 @@ function ExperiencesPage() {
               <FilterChip
                 key={r}
                 active={search.minRating === r}
-                onClick={() =>
-                  update({ minRating: search.minRating === r ? undefined : r })
-                }
+                onClick={() => update({ minRating: search.minRating === r ? undefined : r })}
               >
                 {r}★ +
               </FilterChip>
@@ -140,9 +133,7 @@ function ExperiencesPage() {
           {filtered.length === 0 ? (
             <div className="glass rounded-md border border-[oklch(0.88_0.08_86_/_0.2)] p-16 text-center">
               <p className="font-display text-2xl">Nothing matches.</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Try widening your filters.
-              </p>
+              <p className="text-sm text-muted-foreground mt-2">Try widening your filters.</p>
               <Link to="/experiences" className="mt-6 inline-block underline underline-offset-4">
                 Clear all
               </Link>

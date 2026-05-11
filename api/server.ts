@@ -25,7 +25,7 @@ let serverPromise: Promise<FetchHandler> | undefined;
 function loadServer() {
   if (!serverPromise) {
     serverPromise = (async () => {
-      // @ts-ignore - emitted by `vite build` at deploy time; no shipped types.
+      // @ts-expect-error - emitted by `vite build` at deploy time; no shipped types.
       const mod = await import("../dist/server/server.js");
       return mod.default as FetchHandler;
     })();
@@ -69,7 +69,7 @@ function toFetchHeaders(req: VercelRequest) {
 function toFetchRequest(req: VercelRequest) {
   const method = req.method ?? "GET";
   const bodyless = method === "GET" || method === "HEAD";
-  const body = bodyless ? undefined : req.body ?? (req as unknown as ReadableStream);
+  const body = bodyless ? undefined : (req.body ?? (req as unknown as ReadableStream));
 
   return new Request(new URL(req.url ?? "/", getRequestOrigin(req)), {
     method,

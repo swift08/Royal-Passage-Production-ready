@@ -31,6 +31,8 @@ export function HeroSlideshow({
   const current = safeImages[Math.min(active, Math.max(0, safeImages.length - 1))];
   if (!current) return null;
 
+  const isFirstSlide = current.src === safeImages[0]?.src;
+
   return (
     <div className={className}>
       <AnimatePresence mode="wait" initial={false}>
@@ -38,6 +40,9 @@ export function HeroSlideshow({
           key={current.src}
           src={current.src}
           alt={current.alt}
+          loading={isFirstSlide ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={isFirstSlide ? "high" : "low"}
           className="h-full w-full object-cover"
           initial={reduceMotion ? false : { opacity: 0, scale: 1.02, filter: "blur(3px)" }}
           animate={{ opacity: 1, scale: 1.04, filter: "blur(0px)" }}
@@ -48,4 +53,3 @@ export function HeroSlideshow({
     </div>
   );
 }
-

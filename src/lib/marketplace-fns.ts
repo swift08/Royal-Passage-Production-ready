@@ -12,6 +12,10 @@ import { getOrSetServerCache } from "@/lib/cache.server";
 import { mapRowToExperience, type ExperienceRow, type SlotRow } from "@/lib/experience-db";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
+type JsonObject = { [key: string]: JsonValue };
+
 function fallbackCatalog() {
   return {
     mode: "static" as const,
@@ -235,13 +239,13 @@ export const createPendingBooking = createServerFn({ method: "POST" })
  */
 export const getDatabaseSnapshot = createServerFn({ method: "GET" }).handler(
   async (): Promise<{
-    hosts: unknown[];
-    experience_categories: unknown[];
-    experiences: unknown[];
-    experience_slots: unknown[];
-    bookings: unknown[];
-    reviews: unknown[];
-    platform_settings: unknown[];
+    hosts: JsonObject[];
+    experience_categories: JsonObject[];
+    experiences: JsonObject[];
+    experience_slots: JsonObject[];
+    bookings: JsonObject[];
+    reviews: JsonObject[];
+    platform_settings: JsonObject[];
   }> => {
     if (!isSupabaseConfigured()) {
       return {
@@ -284,13 +288,13 @@ export const getDatabaseSnapshot = createServerFn({ method: "GET" }).handler(
     if (err) throw new Error(err.message);
 
     return {
-      hosts: hosts.data ?? [],
-      experience_categories: experience_categories.data ?? [],
-      experiences: experiences.data ?? [],
-      experience_slots: experience_slots.data ?? [],
-      bookings: bookings.data ?? [],
-      reviews: reviews.data ?? [],
-      platform_settings: platform_settings.data ?? [],
+      hosts: (hosts.data ?? []) as JsonObject[],
+      experience_categories: (experience_categories.data ?? []) as JsonObject[],
+      experiences: (experiences.data ?? []) as JsonObject[],
+      experience_slots: (experience_slots.data ?? []) as JsonObject[],
+      bookings: (bookings.data ?? []) as JsonObject[],
+      reviews: (reviews.data ?? []) as JsonObject[],
+      platform_settings: (platform_settings.data ?? []) as JsonObject[],
     };
   },
 );

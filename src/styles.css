@@ -45,13 +45,14 @@
   --shadow-lift:
     0 1px 0 oklch(0.82 0.1 78 / 0.18), 0 22px 48px -14px oklch(0.06 0.03 22 / 0.55),
     0 0 48px -16px oklch(0.72 0.12 78 / 0.22);
-  --shadow-gold: 0 0 42px -10px oklch(0.72 0.14 78 / 0.55), inset 0 1px 0 oklch(0.92 0.06 82 / 0.25);
+  --shadow-gold:
+    0 0 42px -10px oklch(0.72 0.14 78 / 0.55), inset 0 1px 0 oklch(0.92 0.06 82 / 0.25);
 }
 
 :root {
   --radius: 6px;
   /* Header is shorter on mobile so the fixed bar doesn't eat the viewport. */
-  --header-height: 4rem;
+  --header-height: 4.5rem;
 
   --burgundy: oklch(0.21 0.1 22);
   --burgundy-deep: oklch(0.15 0.08 20);
@@ -105,13 +106,19 @@
 
 @media (min-width: 640px) {
   :root {
-    --header-height: 4.75rem;
+    --header-height: 5.25rem;
   }
 }
 
 @media (min-width: 768px) {
   :root {
-    --header-height: 5.75rem;
+    --header-height: 6.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 7.5rem;
   }
 }
 
@@ -172,6 +179,59 @@
   color: var(--color-muted-foreground);
 }
 
+/* Header — SSR-safe (no Framer Motion inline styles, no hydration mismatch) */
+.site-header {
+  background-color: oklch(0.15 0.07 22 / 0.45);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom: 1px solid oklch(0.72 0.09 78 / 0.14);
+  box-shadow: 0 0 0 transparent;
+}
+.site-header[data-elevated="true"] {
+  background-color: oklch(0.17 0.08 22 / 0.92);
+  backdrop-filter: blur(22px) saturate(1.35);
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  border-bottom-color: oklch(0.76 0.1 78 / 0.38);
+  box-shadow:
+    0 1px 0 oklch(0.78 0.1 78 / 0.18),
+    inset 0 1px 0 oklch(0.92 0.05 82 / 0.08),
+    0 20px 50px -24px oklch(0.05 0.04 18 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Breathing gold halo for the footer brand mark.
+   Synchronised scale + drop-shadow gives the logo a soft "alive" feel
+   without distracting from the surrounding content. */
+@keyframes logo-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 18px oklch(0.78 0.13 86 / 0.35))
+      drop-shadow(0 0 40px oklch(0.72 0.14 78 / 0.18));
+  }
+  50% {
+    transform: scale(1.035);
+    filter: drop-shadow(0 0 32px oklch(0.82 0.14 86 / 0.6))
+      drop-shadow(0 0 72px oklch(0.76 0.16 78 / 0.4));
+  }
+}
+
+.logo-breathe {
+  transform-origin: center;
+  animation: logo-breathe 4.8s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
 @utility hairline {
   height: 1px;
   background: linear-gradient(90deg, transparent, oklch(0.72 0.1 78 / 0.45), transparent);
@@ -193,11 +253,7 @@
 }
 
 @utility glass-strong {
-  background: linear-gradient(
-    165deg,
-    oklch(0.36 0.1 25 / 0.48) 0%,
-    oklch(0.2 0.07 22 / 0.45) 100%
-  );
+  background: linear-gradient(165deg, oklch(0.36 0.1 25 / 0.48) 0%, oklch(0.2 0.07 22 / 0.45) 100%);
   border: 1px solid oklch(0.8 0.11 78 / 0.32);
   box-shadow:
     inset 0 1px 0 0 oklch(0.92 0.05 85 / 0.14),
@@ -220,40 +276,5 @@
       inset 0 1px 0 0 oklch(0.96 0.04 85 / 0.18),
       0 18px 52px -14px oklch(0.12 0.05 22 / 0.55),
       0 0 56px -14px oklch(0.76 0.14 78 / 0.35);
-  }
-}
-
-@keyframes category-ticker-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.category-ticker-mask {
-  overflow: hidden;
-  width: 100%;
-}
-
-.category-ticker-track {
-  display: flex;
-  width: max-content;
-  gap: 1px;
-  animation: category-ticker-scroll 28s linear infinite;
-}
-
-.category-ticker-paused {
-  animation: none;
-}
-
-.category-ticker-item {
-  flex: 0 0 min(22rem, 72vw);
-}
-
-@media (min-width: 768px) {
-  .category-ticker-item {
-    flex-basis: 18rem;
   }
 }

@@ -204,5 +204,4 @@ export const experiences: Experience[] = [
   },
 ];
 
-export const getExperience = (slug: string) =>
-  experiences.find((e) => e.slug === slug);
+export const getExperience = (slug: string) => experiences.find((e) => e.slug === slug);

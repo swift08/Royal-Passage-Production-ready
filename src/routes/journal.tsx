@@ -20,8 +20,8 @@ function JournalPage() {
         <div className="eyebrow mb-3">The journal</div>
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl">Coming soon.</h1>
         <p className="mt-5 sm:mt-6 max-w-xl text-sm sm:text-base text-muted-foreground">
-          A slow-paced publication on craft, hospitality, and the people behind the
-          experiences. Launching alongside our second cohort of hosts.
+          A slow-paced publication on craft, hospitality, and the people behind the experiences.
+          Launching alongside our second cohort of hosts.
         </p>
       </section>
       <Footer />
